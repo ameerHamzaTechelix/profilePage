@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Dashboard</title>
+    <meta content="width=device-width, initial-scale=1.0, shrink-to-fit=no" name="viewport"/>
+
+    <!-- Fonts and icons -->
+    <script src="assets/js/plugin/webfont/webfont.min.js"></script>
+    <script>
+      WebFont.load({
+        google: { families: ["Public Sans:300,400,500,600,700"] },
+        custom: {
+          families: [
+            "Font Awesome 5 Solid",
+            "Font Awesome 5 Regular",
+            "Font Awesome 5 Brands",
+            "simple-line-icons",
+          ],
+          urls: ["assets/css/fonts.min.css"],
+        },
+        active: function () {
+          sessionStorage.fonts = true;
+        },
+      });
+    </script>
+
+<style>
+  .sidebar {
+  width: 80px;
+  height: 100vh;
+  position: fixed;
+  background-color: #2d314f !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 1030; /* <-- Add this line */
+}
+    .navbar-nav {
+      width: 100%;
+    }
+
+    .nav-item {
+      text-align: center;
+      position: relative;
+    }
+
+    .nav-link {
+  color: #ccc;
+  padding: 1rem 0;
+  font-size: 1.2rem;
+  position: relative;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.nav-item:hover .nav-link {
+  background-color: #2d314f; /* same as sidebar background */
+  color: #fff;
+}
+
+.nav-link .label {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #2d314f; /* same as sidebar background */
+  padding: 4px 10px;
+  white-space: nowrap;
+  border-radius: 4px;
+  color: white;
+  font-size: 0.75rem;
+  z-index: 999;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* optional shadow */
+}
+
+.nav-item:hover .label {
+  display: block;
+}
+
+    .section-title {
+      font-size: 0.6rem;
+      color: #aaa;
+      text-align: center;
+      margin: 1rem 0 0.25rem;
+      letter-spacing: 0.5px;
+    }
+
+    .arrow::after {
+      content: '\203A';
+      font-size: 1rem;
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none;
+    }
+    .sidebar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  .navbar-custom {
+      background-color: #f8f9fb;
+      padding: 10px 20px;
+    }
+    .search-wrapper {
+  position: relative;
+  background-color: #e4e4e7;
+  max-width: 280px;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  transform: translateY(-50%);
+  font-size: 1rem;
+}
+
+.search-input {
+  padding-left: 2vw !important;
+  background-color: #e4e4e7;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  font-size: 14px;
+}
+.search-input:focus {
+  outline: none;
+  box-shadow: none;
+  padding-left: 2vw;
+  background-color: #e4e4e7 !important;
+}
+    .search-box-container input{
+      max-width: 20vw !important;
+      background-color: #e4e4e7;
+    }
+    .icon-btn {
+      border: none;
+      border-radius: 8px;
+      width: 3vw;
+      height: 3vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 4px;
+    }
+    .icon-btn i{
+      font-size: 20px;
+    }
+
+    .profile-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .notification-dot {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      border-radius: 50%;
+    }
+    .icon-wrapper {
+      position: relative;
+      right: 0;
+    }
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  .profile-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: center;
+  }
+  .profile-image {
+    width: 100%;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-bottom: 1rem;
+  }
+  .quick-actions-btn {
+    width: 100%;
+    margin: 1rem 0;
+  }
+  .action-buttons .btn {
+    width: 48%;
+    margin-bottom: 10px;
+  }
+  .personal-info-section,
+  .tags-section {
+    text-align: left;
+    margin-top: 20px;
+  }
+  .personal-info-section h5,
+  .tags-section h5 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+  }
+  .tag {
+    background: #f1f3f5;
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-size: 13px;
+    margin: 3px;
+    display: inline-block;
+  }
+  .add-tag {
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+  .nav-tabs .nav-link.active {
+    border-color: transparent;
+    border-bottom: 2px solid #0d6efd;
+    background: transparent;
+  }
+  .nav-tabs .nav-link {
+    color: #000;
+  }
+  .nav-tabs {
+    border-bottom: 1px solid #dee2e6;
+  }
+  .info-card {
+    background: linear-gradient(135deg, #e0f7fa, #fce4ec, #f3e5f5);
+    border-radius: 16px;
+    padding: 1.5rem 1rem;
+    position: relative;
+    height: 160px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  .info-card .icon-bg {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .info-card .icon-bg i {
+    font-size: 24px;
+    color: black;
+  }
+  .info-card h6 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+  }
+  .info-card p {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+  }
+  .info-card .small-text {
+    font-size: 12px;
+    color: #555;
+  }
+  .card-gradient-1 {
+    background: linear-gradient(135deg, #d2f0fb, #e0f7fa, #e3f2fd);
+  }
+  .card-gradient-2 {
+    background: linear-gradient(135deg, #e9d8fd, #fce4ec, #f3e5f5);
+  }
+  .card-gradient-3 {
+    background: linear-gradient(135deg, #faf8d2, #fbe9e7, #fce4ec);
+  }
+  .card-gradient-4 {
+    background: linear-gradient(135deg, #e4ffe5, #f0fff4, #fce4ec);
+  }
+  .card-gradient-5 {
+    background: linear-gradient(135deg, #d2f4ff, #e0f7fa, #e3f2fd);
+  }
+  .card-table {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    margin-top: 2rem;
+  }
+  .section-header {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .email-history-note {
+    font-size: 14px;
+    color: #6c757d;
+  }
+  .email-history-link {
+    color: #007bff;
+    cursor: pointer;
+  }
+</style>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/index.min.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="wrapper sidebar_minimize">
+      <!-- Sidebar -->
+      <div class="sidebar" data-background-color="dark">
+        <div class="sidebar-logo">
+          <!-- Logo Header -->
+          <div class="logo-header" data-background-color="dark">
+            <a href="index.html" class="logo">
+              <!-- <img
+                src="assets/img/kaiadmin/logo_light.svg"
+                alt="navbar brand"
+                class="navbar-brand"
+                height="20"
+              /> -->
+              <i class="bi bi-fire text-white fs-2"></i>
+            </a>
+          </div>
+          <!-- End Logo Header -->
+        </div>
+        <nav class="sidebar navbar navbar-dark">
+          <div class="container-fluid flex-column">
+            <div class="navbar-brand mx-auto mb-4"><i class="bi bi-fire text-white fs-2"></i></div>
+            <div class="w-100">
+              
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-grid"></i><span class="label">Dashboard</span></a>
+                </li>
+              </ul>
+              <!-- PEOPLE -->
+              <div class="section-title">PEOPLE</div>
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-person-plus"></i><span class="label">Add Person</span></a>
+                </li>
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-clipboard-data"></i><span class="label">Reports</span></a>
+                </li>
+              </ul>
+        
+              <!-- SCHEDULE -->
+              <div class="section-title">SCHEDULE</div>
+              <ul class="navbar-nav">
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-calendar-week"></i><span class="label">Calendar</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-person-running"></i><span class="label">Activities</span></a>
+                </li>
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-journal-check"></i><span class="label">Tasks</span></a>
+                </li>
+              </ul>
+        
+              <!-- SALE -->
+              <div class="section-title">SALE</div>
+              <ul class="navbar-nav">
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-tag"></i><span class="label">Sales</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-gear"></i><span class="label">Settings</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-funnel"></i><span class="label">Filter</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-heart"></i><span class="label">Favorites</span></a>
+                </li>
+              </ul>
+        
+              <!-- PAYMENT -->
+              <div class="section-title">PAYMENT</div>
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-basket"></i><span class="label">Basket</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-cart"></i><span class="label">Cart</span></a>
+                </li>
+              </ul>
+        
+              <!-- SPARK -->
+              <div class="section-title">SPARK</div>
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-p-circle"></i><span class="label">Parking</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-flame"></i><span class="label">Fire</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-lightning-charge"></i><span class="label">Energy</span></a>
+                </li>
+              </ul>
+        
+              <!-- MANAGEMENT -->
+              <div class="section-title">MANAGEM..</div>
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-briefcase"></i><span class="label">Portfolio</span></a>
+                </li>
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-bar-chart-line"></i><span class="label">Analytics</span></a>
+                </li>
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-bank"></i><span class="label">Departments</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-clipboard-check"></i><span class="label">Checklist</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-journal-text"></i><span class="label">Documents</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-phone"></i><span class="label">Contact</span></a>
+                </li>
+              </ul>
+        
+              <!-- OTHERS -->
+              <div class="section-title">OTHERS</div>
+              <ul class="navbar-nav mb-5">
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-award"></i><span class="label">Achievements</span></a>
+                </li>
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-chat-text"></i><span class="label">Chat</span></a>
+                </li>
+                <li class="nav-item arrow">
+                  <a class="nav-link" href="#"><i class="bi bi-gear-fill"></i><span class="label">Settings</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#"><i class="bi bi-question-circle"></i><span class="label">Help</span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <!-- End Sidebar -->
+
+      <div class="main-panel">
+        <div class="main-header">
+          <div class="main-header-logo">
+            <!-- Logo Header -->
+            <div class="logo-header" data-background-color="dark">
+              <a href="index.html" class="logo">
+                <img
+                  src="assets/img/kaiadmin/logo_light.svg"
+                  alt="navbar brand"
+                  class="navbar-brand"
+                  height="20"
+                />
+              </a>
+            </div>
+            <!-- End Logo Header -->
+          </div>
+          <!-- Navbar Header -->
+          <div class="navbar-custom d-flex align-items-center justify-content-between">
+            <!-- Search box -->
+            <div class="search-wrapper me-3 search-box-container">
+              <i class="bi bi-search search-icon"></i>
+              <input type="text" class="form-control search-input" placeholder="Search contact">
+            </div>
+          
+            <!-- Icon buttons -->
+            <div class="d-flex align-items-center">
+              <button class="icon-btn"><i class="bi bi-person-plus"></i></button>
+              <button class="icon-btn"><i class="bi bi-people"></i></button>
+              <button class="icon-btn"><i class="bi bi-patch-check"></i></button>
+              <button class="icon-btn"><i class="bi bi-calendar-event"></i></button>
+              <button class="icon-btn"><i class="bi bi-handshake"></i></button>
+              <button class="icon-btn"><i class="bi bi-chat-dots"></i></button>
+              <button class="icon-btn"><i class="bi bi-clipboard"></i></button>
+              <button class="icon-btn"><i class="bi bi-question-circle"></i></button>
+          
+              <!-- Notification with red dot -->
+              <div class="icon-wrapper">
+                <button class="icon-btn position-relative">
+                  <i class="bi bi-bell"></i>
+                  <span class="notification-dot"></span>
+                </button>
+              </div>
+          
+              <button class="icon-btn"><i class="bi bi-clock"></i></button>
+            </div>
+          
+            <!-- Profile section -->
+            <div class="d-flex align-items-center ms-3">
+              <img src="assets/img/profile.jpg" alt="Profile" class="profile-img me-2">
+              <div>
+                <div class="fw-semibold">Savannah Nguyen</div>
+                <div class="text-muted" style="font-size: 0.85rem;">Admin</div>
+              </div>
+              <i class="bi bi-caret-down-fill ms-2"></i>
+            </div>
+          </div>
+          <!-- End Navbar -->
+        </div>
+
+        <div class="container">
+          <div class="page-inner">
+            <div class="content col px-4">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="profile-card">
+                    <img
+                      src="assets/img/profile.jpg"
+                      alt="Profile"
+                      class="profile-image"
+                    />
+                    <h4 class="fw-bold">Max Holloway</h4>
+                    <div class="dropdown quick-actions-btn">
+                      <button
+                        class="btn btn-primary dropdown-toggle"
+                        type="button"
+                        id="quickActions"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <i class="bi bi-lightning-charge-fill"></i> Quick Actions
+                      </button>
+                      <ul class="dropdown-menu" aria-labelledby="quickActions">
+                        <li><a class="dropdown-item" href="#">Action 1</a></li>
+                        <li><a class="dropdown-item" href="#">Action 2</a></li>
+                      </ul>
+                    </div>
+                    <div
+                      class="d-flex flex-wrap justify-content-between action-buttons"
+                    >
+                      <button class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle"></i> Add Credit
+                      </button>
+                      <button class="btn btn-outline-primary">
+                        <i class="bi bi-pencil-square"></i> Create Workout
+                      </button>
+                      <button class="btn btn-outline-primary">
+                        <i class="bi bi-eye"></i> Show Fitness
+                      </button>
+                      <button class="btn btn-outline-primary">
+                        <i class="bi bi-upc-scan"></i> Bar Code Print
+                      </button>
+                    </div>
+                    <div class="personal-info-section">
+                      <h5><i class="bi bi-caret-down-fill"></i> Personal Info</h5>
+                      <div class="info-item">
+                        <span>Pronunciation</span
+                        ><span><i class="bi bi-volume-up"></i></span>
+                      </div>
+                      <div class="info-item">
+                        <span>Using Student App</span><span>No</span>
+                      </div>
+                      <div class="info-item">
+                        <span>Mobile Phone</span><span>(473) 555-0927</span>
+                      </div>
+                      <div class="info-item">
+                        <span>Mobile Phone #2</span
+                        ><span
+                          ><a href="#" class="text-primary"
+                            >+ add new Phone</a
+                          ></span
+                        >
+                      </div>
+                      <div class="info-item">
+                        <span>Email Address</span
+                        ><span
+                          ><a href="mailto:izzy@gmail.com" class="text-primary"
+                            >izzy@gmail.com</a
+                          ></span
+                        >
+                      </div>
+                      <div class="info-item">
+                        <span>Email Address #2</span
+                        ><span
+                          ><a href="#" class="text-primary"
+                            >+ add new Email</a
+                          ></span
+                        >
+                      </div>
+                    </div>
+                    <div class="tags-section">
+                      <h5>
+                        <i class="bi bi-caret-down-fill"></i> Tags
+                        <span class="add-tag">+</span>
+                      </h5>
+                      <span class="tag">benefits-focus</span>
+                      <span class="tag">attended-appointment</span>
+                      <span class="tag">bought-uniform</span>
+                      <span class="tag">Interested-in-kungfu</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-9">
+                  <ul class="nav nav-tabs mb-3">
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Notes</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link active" href="#">Communication</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Workouts</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Attendance</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Invoice</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">Ranks</a>
+                    </li>
+                  </ul>
+                  <ul class="nav nav-pills mb-4">
+                    <li class="nav-item">
+                      <a class="nav-link" href="#">SMS Messages</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link active" href="#">Email History</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">App</a></li>
+                  </ul>
+                  <div class="row g-3">
+                    <div class="col">
+                      <div class="info-card card-gradient-1">
+                        <div class="icon-bg">
+                          <i class="bi bi-envelope-fill"></i>
+                        </div>
+                        <div>
+                          <h6>
+                            Email Sent<br /><small class="small-text"
+                              >Last 60 days</small
+                            >
+                          </h6>
+                          <p>6</p>
+                          <div class="small-text">Opened: 1 Bounce: 1</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="info-card card-gradient-2">
+                        <div class="icon-bg">
+                          <i class="bi bi-calendar-event-fill"></i>
+                        </div>
+                        <div>
+                          <h6>Appointment Booked</h6>
+                          <p>0</p>
+                          <div class="small-text">Showed: 0 No show: 0</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="info-card card-gradient-3">
+                        <div class="icon-bg">
+                          <i class="bi bi-calendar-check-fill"></i>
+                        </div>
+                        <div>
+                          <h6>Total Attendance</h6>
+                          <p>81</p>
+                          <div class="small-text">
+                            Last 7 Days: 3<br />Last 30 Days: 21
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="info-card card-gradient-4">
+                        <div class="icon-bg">
+                          <i class="bi bi-clipboard-check-fill"></i>
+                        </div>
+                        <div>
+                          <h6>Tasks</h6>
+                          <p>3</p>
+                          <div class="small-text">Completed: 3 Overdue: 3</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="info-card card-gradient-5">
+                        <div class="icon-bg">
+                          <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                        <div>
+                          <h6>Invoices</h6>
+                          <p>3</p>
+                          <div class="small-text">Completed: 3 Overdue: 3</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-table">
+                    <h5 class="section-header">Email History</h5>
+                    <p class="email-history-note">
+                      <strong>UTC Time Conversion</strong><br />No emails in the
+                      last 60 days for this contact, check email history.
+                    </p>
+                    <p class="email-history-note">
+                      <strong>PLEASE NOTE:</strong> Only showing the last 60 days
+                      email history,
+                      <span class="email-history-link"
+                        >show all email history</span
+                      >
+                    </p>
+                    <div class="table-responsive">
+                      <table class="table table-bordered align-middle">
+                        <thead>
+                          <tr>
+                            <th>Sent</th>
+                            <th>Subject</th>
+                            <th>Opened</th>
+                            <th>Link clicked</th>
+                            <th>Bounced/Dropped/Deferred</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>12/17/2024</td>
+                            <td>Snow day</td>
+                            <td>✖️</td>
+                            <td>✖️</td>
+                            <td>✔️</td>
+                          </tr>
+                          <tr>
+                            <td>12/17/2024</td>
+                            <td>Your payment is due today</td>
+                            <td>✖️</td>
+                            <td>✖️</td>
+                            <td>✔️</td>
+                          </tr>
+                          <tr>
+                            <td>12/17/2024</td>
+                            <td>Your payment is due today</td>
+                            <td>✖️</td>
+                            <td>✖️</td>
+                            <td>✔️</td>
+                          </tr>
+                          <tr>
+                            <td>12/17/2024</td>
+                            <td>Your membership is ready to signed.</td>
+                            <td>✖️</td>
+                            <td>✖️</td>
+                            <td>✔️</td>
+                          </tr>
+                          <tr>
+                            <td>12/17/2024</td>
+                            <td>Welcome to our New Student Member App</td>
+                            <td>✖️</td>
+                            <td>✖️</td>
+                            <td>✔️</td>
+                          </tr>
+                          <tr>
+                            <td>12/17/2024</td>
+                            <td>Come Try Some Free Classes With Us at AMA</td>
+                            <td>✖️</td>
+                            <td>✖️</td>
+                            <td>✔️</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+    <script src="assets/js/core/bootstrap.min.js"></script>    
+   
+  </body>
+</html>
